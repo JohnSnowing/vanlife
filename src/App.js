@@ -10,21 +10,27 @@ import Dashboard from './pages/Host/Dashboard';
 import Income from './pages/Host/Income';
 import Reviews from './pages/Host/Reviews';
 import HostLayout from './components/HostLayout';
+import HostVans from './pages/Host/HostVans';
+import HostVanDetails from './pages/Host/HostVanDetail';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path='/' element={<Home />}/>
-          <Route path='/about' element={<About />}/>
-          <Route path='/vans' element={<Vans />} />
-          <Route path='/vans/:id' element={<VanDetail />}/>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<Home />}/>
+          <Route path='about' element={<About />}/>
+          <Route path='vans' element={<Vans />} />
+          <Route path='vans/:id' element={<VanDetail />}/>
 
-          <Route path='/host' element={<HostLayout />}>
-            <Route path="/host" element={<Dashboard />} />
-            <Route path="/host/income" element={<Income />} />
-            <Route path="/host/reviews" element={<Reviews />} />
+          <Route path='host' element={<HostLayout />}> 
+          {/* your can speciy parent path and child relatively */}
+            <Route index element={<Dashboard />} />
+            {/* absolute path index */}
+            <Route path="income" element={<Income />} />
+            <Route path="reviews" element={<Reviews />} />
+            <Route path="vans" element={<HostVans />} />
+            <Route path="vans/:id" element={<HostVanDetails />} />
           </Route>
         </Route>
       </Routes>
