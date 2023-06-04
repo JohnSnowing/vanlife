@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 export default function VanDetail() {
   const params = useParams();
+  const location = useLocation();
+  //use location getting the history state of the url passed from <Link>
   const [van, setVan] = useState(null);
 
   useEffect(() => {
@@ -11,8 +13,15 @@ export default function VanDetail() {
       .then((data) => setVan(data.vans));
   }, [params.id]);
 
+  const search = location.state?.search || "";
+  const type = location.state?.type || "all";
+  // get the object search pass from the link parent
+
   return (
     <div className="van-detail-container">
+      <Link to={`..${search}`} relative="path" className="back-button">
+        &larr; <span>Back to {type} vans</span>
+      </Link>
       {van ? (
         <div className="van-detail">
           <img src={van.imageUrl} alt="van" />

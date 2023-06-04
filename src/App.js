@@ -1,7 +1,7 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
-import Vans from './pages/Vans/Vans';
+import Vans, { loader as vansloader } from './pages/Vans/Vans';
 
 import "./server";
 import VanDetail from './pages/Vans/VanDetail';
@@ -15,34 +15,66 @@ import HostVanDetails from './pages/Host/HostVanDetail';
 import HostVanInfo from './pages/Host/HostVanInfo';
 import HostVanPricing from './pages/Host/HostVanPricing';
 import HostVanPhotos from './pages/Host/HostVanPhotos';
+import NotFound from './pages/NotFound';
+import Error from './components/Error';
+
+const router = createBrowserRouter(createRoutesFromElements(
+  <Route path='/' element={<Layout />}>
+    <Route index element={<Home />}/>
+    <Route path='about' element={<About />}/>
+    <Route path='vans' element={<Vans />} loader={vansloader} errorElement={<Error />} />
+    <Route path='vans/:id' element={<VanDetail />}/>
+
+    <Route path='host' element={<HostLayout />}> 
+      {/* your can speciy parent path and child relatively */}
+        <Route index element={<Dashboard />} />
+      {/* absolute path index */}
+        <Route path="income" element={<Income />} />
+        <Route path="reviews" element={<Reviews />} />
+        <Route path="vans" element={<HostVans />} />
+        <Route path="vans/:id" element={<HostVanDetails />}>
+        <Route index element={<HostVanInfo />} />
+          <Route path="pricing" element={<HostVanPricing />} />
+          <Route path="photos" element={<HostVanPhotos />} />
+        </Route>
+      </Route>
+      <Route path='*' element={<NotFound />}/>
+  </Route>
+
+))
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Layout />}>
-          <Route index element={<Home />}/>
-          <Route path='about' element={<About />}/>
-          <Route path='vans' element={<Vans />} />
-          <Route path='vans/:id' element={<VanDetail />}/>
+  return <RouterProvider router={router} />;
+}
 
-          <Route path='host' element={<HostLayout />}> 
-          {/* your can speciy parent path and child relatively */}
-            <Route index element={<Dashboard />} />
-            {/* absolute path index */}
-            <Route path="income" element={<Income />} />
-            <Route path="reviews" element={<Reviews />} />
-            <Route path="vans" element={<HostVans />} />
-            <Route path="vans/:id" element={<HostVanDetails />}>
-              <Route index element={<HostVanInfo />} />
-              <Route path="pricing" element={<HostVanPricing />} />
-              <Route path="photos" element={<HostVanPhotos />} />
-            </Route>
-          </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
-} 
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <Routes>
+//         <Route path='/' element={<Layout />}>
+//           <Route index element={<Home />}/>
+//           <Route path='about' element={<About />}/>
+//           <Route path='vans' element={<Vans />} />
+//           <Route path='vans/:id' element={<VanDetail />}/>
+
+//           <Route path='host' element={<HostLayout />}> 
+//           {/* your can speciy parent path and child relatively */}
+//             <Route index element={<Dashboard />} />
+//             {/* absolute path index */}
+//             <Route path="income" element={<Income />} />
+//             <Route path="reviews" element={<Reviews />} />
+//             <Route path="vans" element={<HostVans />} />
+//             <Route path="vans/:id" element={<HostVanDetails />}>
+//               <Route index element={<HostVanInfo />} />
+//               <Route path="pricing" element={<HostVanPricing />} />
+//               <Route path="photos" element={<HostVanPhotos />} />
+//             </Route>
+//           </Route>
+//           <Route path='*' element={<NotFound />}/>
+//         </Route>
+//       </Routes>
+//     </BrowserRouter>
+//   );
+// } 
 
 export default App;

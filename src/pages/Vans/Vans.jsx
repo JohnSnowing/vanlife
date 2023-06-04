@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLoaderData, useSearchParams } from "react-router-dom";
+import { getVans } from "../../api";
+
+export function loader() {
+  return getVans();
+}
+//return the value here first before so that hindi mauna ang useEffect
 
 export default function Vans() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -8,21 +14,41 @@ export default function Vans() {
   const typeFilter = searchParams.get("type");
   //getting the variables on url
 
-  const [vans, setVans] = useState([]);
+  // const [vans, setVans] = useState([]);
+  // const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const vans = useLoaderData();
+  // console.log(data);
 
-  useEffect(() => {
-    fetch("/api/vans")
-      .then((res) => res.json())
-      .then((data) => setVans(data.vans));
-  }, []);
+  // useEffect(() => {
+  //   async function loadVans() {
+  //     setLoading(true);
+  //     try {
+  //       const data = await getVans();
+  //       console.log(data);
+  //       setVans(data);
+  //     } catch (err) {
+  //       setError(err);
+  //       console.log("error", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+
+  //   loadVans();
+  // }, []);
 
   const displayedVans = typeFilter
     ? vans.filter((van) => van.type === typeFilter)
     : vans;
 
-  const vanElements = displayedVans.map((van) => (
+  const vanElements = displayedVans?.map((van) => (
     <div key={van.id} className="van-title">
-      <Link to={`/vans/${van.id}`}>
+      <Link
+        to={van.id}
+        state={{ search: `?${searchParams.toString()}`, type: typeFilter }}
+      >
+        {/* state prop on link makes you remember last history of url */}
         <img src={van.imageUrl} alt="van-logo" />
         <div className="van-info">
           <h3>{van.name}</h3>
@@ -45,6 +71,14 @@ export default function Vans() {
       }
       return prevParams;
     });
+  }
+
+  // if (loading) {
+  //   return <h1>Loading...</h1>;
+  // }
+
+  if (error) {
+    <h1>There was an error {error.message}</h1>;
   }
 
   return (
