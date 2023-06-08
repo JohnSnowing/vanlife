@@ -19,11 +19,14 @@ export async function action({ request }) {
     const formData = await request.formData();
     const email = formData.get("email");
     const password = formData.get("password");
+    const pathname =
+        new URLSearchParams(request.url).searchParams.get("redirectTo") ||
+        "/host";
 
     try {
         const data = await loginUser({ email, password });
         localStorage.setItem("loggedin", true);
-        return redirect("/host");
+        return redirect(pathname);
     } catch (error) {
         return error.message;
     }
@@ -33,6 +36,7 @@ export async function action({ request }) {
 
 export default function Login() {
     const errorMessage = useActionData();
+    //return something from action data
     const message = useLoaderData();
     const navigation = useNavigation();
 
@@ -43,6 +47,7 @@ export default function Login() {
             {errorMessage && <h3 className="red">{errorMessage}</h3>}
             {/* Warning goes here. Give it a classname="red" */}
             {/* Form react router import to use to simplify react form */}
+            {/* replace prop in form so that login pages was remove to the history */}
             <Form method="post" replace className="login-form">
                 <input name="email" type="email" placeholder="Email address" />
                 <input name="password" type="password" placeholder="Password" />
